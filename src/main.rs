@@ -27,7 +27,7 @@ fn main()-> std::io::Result<()> {
 	
 	const EPSILON: f64 = 0.00001; 
 	
-	let system_parameters : model::Parameters = model::Parameters { beta: 0.005, gamma: 0.002, mu: 0.001};
+	let system_parameters : model::Parameters = model::Parameters { beta: 1.005, gamma: 0.002, mu: 0.001};
 	
 	let dt: f64 = 1.0 / 128.0;
 	
