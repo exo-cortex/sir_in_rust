@@ -27,14 +27,14 @@ fn main()-> std::io::Result<()> {
 	
 	const EPSILON: f64 = 0.00001; 
 	
-	let system_parameters : model::Parameters = model::Parameters { beta: 1.005, gamma: 0.002, mu: 0.001};
+	let system_parameters : model::Parameters = model::Parameters { beta: 0.075, gamma: 0.03, mu: 0.001};
 	
 	let dt: f64 = 1.0 / 128.0;
 	
 	let mut state: model::ModelState = model::ModelState {s: 0.99, i: 0.01, r: 0.0};
 	
-	let segment_length: usize = 4096 * 16;
-	let segments: usize = 1000 / 8;
+	let segment_length: usize = 4096 * 8;
+	let segments: usize = 20;
 
 	// let mut timeseries: Vec<f64> = vec![0.0_f64; segment_length];
 	let mut timeseries: Vec<Vec<f64>> = vec![vec![0.0_f64; 3]; segment_length];
