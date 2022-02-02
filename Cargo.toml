@@ -1,0 +1,13 @@
+[package]
+name = "sir"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+derive_more = "0.99.0"
+# You can specifiy the types of derives that you need for less time spent
+# compiling. For the full list of features see this crate its Cargo.toml.
+# default-features = false
+# features = ["from", "add", "iterator"]
