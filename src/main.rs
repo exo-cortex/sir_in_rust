@@ -25,9 +25,9 @@ fn main()-> std::io::Result<()> {
 	// let filename_i = "foo_rk4_i.txt".to_string();
 	// let filename_r = "foo_rk4_r.txt".to_string();
 	
-	const EPSILON: f64 = 0.00001;
+	const EPSILON: f64 = 0.00001; 
 	
-	let system_parameters : model::Parameters = model::Parameters { beta: 0.0125, gamma: 0.0025, mu: 0.002};
+	let system_parameters : model::Parameters = model::Parameters { beta: 0.005, gamma: 0.002, mu: 0.001};
 	
 	let dt: f64 = 1.0 / 128.0;
 	
