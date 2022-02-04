@@ -10,20 +10,10 @@ pub struct ModelState {
 }
 
 pub struct Parameters {
-	pub beta: f64,
-	pub gamma: f64,
-	pub mu: f64,
+	pub beta: f64, // infection rate
+	pub gamma: f64, // recovery rate
+	pub mu: f64, // death/birth rate
 }
-
-// #[allow(dead_code)]
-// pub fn update_euler(input: &mut ModelState, p: &Parameters, dt: f64) -> () {
-// 	let ds = p.mu - p.beta * input.s * input.i - p.mu * input.s;
-// 	let di = p.beta * input.s * input.i - p.gamma * input.i - p.mu * input.i;
-// 	let dr = p.gamma * input.i - p.mu * input.r;
-// 	input.s += dt * ds;
-// 	input.i += dt * di;
-// 	input.r += dt * dr;
-// }
 
 #[allow(dead_code)]
 pub fn update_euler(input: &mut ModelState, p: &Parameters, dt: f64) -> () {
@@ -31,6 +21,7 @@ pub fn update_euler(input: &mut ModelState, p: &Parameters, dt: f64) -> () {
 }
 
 fn f(input: &ModelState, p: &Parameters) -> ModelState {
+	// d state / dt = f(state) 
 	return ModelState {
 		s: p.mu - p.beta * input.s * input.i - p.mu * input.s, 
 		i: p.beta * input.s * input.i - p.gamma * input.i - p.mu * input.i,
@@ -54,13 +45,13 @@ pub fn update_rk4_alt(input: &mut ModelState, p: &Parameters, dt: f64) -> () {
 	// see fn update_rk4
 	// here we try to optimize the function
 	let mut k1_and_sum = f(input, p) * dt; // we use k1 also to add up the integration step direction
-	let mut k234 = f(&(input.clone() + k1_and_sum * 0.5), p) * dt;
+	let mut k234 = f(&(input.clone() + k1_and_sum * 0.5), p) * dt; // k2
 	k1_and_sum += k234 * 2.0;
 
-	k234 = f(&(input.clone() + k234 * 0.5), p) * dt;
+	k234 = f(&(input.clone() + k234 * 0.5), p) * dt; // k3
 	k1_and_sum += k234 * 2.0;
 
-	k234 = f(&(input.clone() + k234), p) * dt;
+	k234 = f(&(input.clone() + k234), p) * dt; //k4
 	k1_and_sum += k234;
 	
 	*input += k1_and_sum / 6.0;
