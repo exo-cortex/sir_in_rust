@@ -1,5 +1,4 @@
 use std::fs::File;
-use std::io::prelude::*;
 use std::env;
 
 mod model;
@@ -7,50 +6,50 @@ mod analysis;
 
 fn main()-> std::io::Result<()> {
 	
-	let args: Vec<String> = env::args().collect();
-	for arg in &args {
-		println!("{}", arg);
-	}
-	
 	let mut files: Vec<File> = vec![]; 
-	// vec![File::create(&filename_s)?, File::create(&filename_i)?, File::create(&filename_r)?];
 
 	let file_number = 3;
 	let filenames: Vec<String> = vec!["timeseries_s.txt".to_string(), "timeseries_i.txt".to_string(), "timeseries_r.txt".to_string()];
 	for i in 0..file_number {
 		files.push(File::create(&filenames[i])?);
 	}
-
-	// let filename_s = "foo_rk4_s.txt".to_string();
-	// let filename_i = "foo_rk4_i.txt".to_string();
-	// let filename_r = "foo_rk4_r.txt".to_string();
 	
 	const EPSILON: f64 = 0.00001; 
 	
-	let system_parameters : model::Parameters = model::Parameters { beta: 0.075, gamma: 0.03, mu: 0.001};
-	
+	let mut system_parameters : model::Parameters = model::Parameters { beta: 0.4, gamma: 0.3, mu: 0.01};
+	println!("basic reproduction number R_0 = beta / gamma = {}", system_parameters.beta/system_parameters.gamma);
 	let dt: f64 = 1.0 / 128.0;
 	
 	let mut state: model::ModelState = model::ModelState {s: 0.99, i: 0.01, r: 0.0};
-	
+	let args: Vec<String> = env::args().collect();
+	for i in 0..args.len() {
+		// println!("{} -> {}", i, &args[i]);
+		if &args[i] == "-beta" && i < args.len() - 1 && !&args[i + 1].parse::<f64>().is_err() {
+			system_parameters.beta = args[i + 1].parse().unwrap();
+			println!("beta can be parsed");
+		}
+		if &args[i] == "-gamma" && i < args.len() - 1 && !&args[i + 1].parse::<f64>().is_err() {
+			system_parameters.gamma = args[i + 1].parse().unwrap();
+			println!("gamma can be parsed");
+		}
+		if &args[i] == "-mu" && i < args.len() - 1 && !&args[i + 1].parse::<f64>().is_err() {
+			system_parameters.mu = args[i + 1].parse().unwrap();
+			println!("mu can be parsed");
+		}
+	}
+
+
+
 	let segment_length: usize = 4096 * 8;
 	let segments: usize = 20;
+	println!("integrating {} steps.", segments * segment_length);
 
-	// let mut timeseries: Vec<f64> = vec![0.0_f64; segment_length];
 	let mut timeseries: Vec<Vec<f64>> = vec![vec![0.0_f64; 3]; segment_length];
 	
 	let mut current_time: f64 = 0.0;
 	let mut start_time: f64;
 
 	let do_simplification: bool = true;
-
-	let line = format!("{0:.8}\t{1:.8}\n", current_time, state.s);
-	write!(files[0], "{}", line).expect("no file possible.");
-	let line = format!("{0:.8}\t{1:.8}\n", current_time, state.i);
-	write!(files[1], "{}", line).expect("no file possible.");
-	let line = format!("{0:.8}\t{1:.8}\n", current_time, state.r);
-	write!(files[2], "{}", line).expect("no file possible.");
-
 
 	for _segment in 0..segments {
 		start_time = current_time;
