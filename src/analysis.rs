@@ -1,7 +1,6 @@
 
 extern crate derive_more;
 use derive_more::{Add, Mul}; // AddAssign, MulAssign, Div
-// use std::vec;
 
 use std::fs::File;
 use std::io::prelude::*;
@@ -12,12 +11,13 @@ pub struct Point2 {
 	y: f64,
 }
 
+// todo:
+// find extrema
+// 
+// 
 
 // do rdp (ramer-douglas-peucker) curve simplification
-// a timeseries has x values in an ascending, equidistant order
-// todo: use start index, end index, remove end_time
-
-#[allow(dead_code)]
+// assumption: a timeseries has x values in an ascending, equidistant order
 pub fn write_simplified_timeseries(
 	point_line: &Vec<Vec<f64>>,
 	start_index: usize,
@@ -58,14 +58,15 @@ pub fn simplify_timeseries(
 		}	
 	}
 
+	let line = format!("{0:.8}\t{1:.8}\n", a.x, a.y);
+	write!(outfile, "{}", line).expect("no file possible.");
+
 	if max_distance > epsilon {
 		simplify_timeseries(&point_line, coordinate_index, start_index, index_of_max, start_time, dt, epsilon, outfile);
 		simplify_timeseries(&point_line, coordinate_index, index_of_max, end_index, start_time, dt, epsilon, outfile);
 		return
 	}
 
-	let line = format!("{0:.8}\t{1:.8}\n", b.x, b.y);
-	write!(outfile, "{}", line).expect("no file possible.");
 	return
 }
 
