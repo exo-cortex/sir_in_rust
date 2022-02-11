@@ -14,12 +14,15 @@ fn main()-> std::io::Result<()> {
 		files.push(File::create(&filenames[i])?);
 	}
 	
-	const EPSILON: f64 = 0.00001; 
+	const EPSILON: f64 = 0.0005; 
 	
 	let mut system_parameters : model::Parameters = model::Parameters { beta: 0.4, gamma: 0.3, mu: 0.01};
 	println!("basic reproduction number R_0 = beta / gamma = {}", system_parameters.beta/system_parameters.gamma);
 	let dt: f64 = 1.0 / 128.0;
 	
+	let segment_length: usize = 4096 * 8;
+	let mut segments: usize = 20;
+
 	let mut state: model::ModelState = model::ModelState {s: 0.99, i: 0.01, r: 0.0};
 	let args: Vec<String> = env::args().collect();
 	for i in 0..args.len() {
@@ -36,12 +39,14 @@ fn main()-> std::io::Result<()> {
 			system_parameters.mu = args[i + 1].parse().unwrap();
 			println!("mu can be parsed");
 		}
+
+		if &args[i] == "-segments" && i < args.len() - 1 && !&args[i + 1].parse::<usize>().is_err() {
+			segments = args[i + 1].parse().unwrap();
+		}
 	}
 
 
 
-	let segment_length: usize = 4096 * 8;
-	let segments: usize = 20;
 	println!("integrating {} steps.", segments * segment_length);
 
 	let mut timeseries: Vec<Vec<f64>> = vec![vec![0.0_f64; 3]; segment_length];
