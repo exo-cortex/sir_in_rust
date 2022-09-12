@@ -1,5 +1,3 @@
-
-extern crate derive_more;
 use derive_more::{Add, AddAssign, Mul, Div};
 
 #[derive(Copy, Clone, Add, AddAssign, Mul, Div)]
